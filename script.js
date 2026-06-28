@@ -1,5 +1,5 @@
 /* =========================================================
-   🌸 ADVANCED SECRET DIARY — with Bow Cursor, Calendar & Mood
+   🌸 SECRET DIARY - Complete Version
    ========================================================= */
 
 // ============ THEME DEFINITIONS ============
@@ -312,7 +312,8 @@ const STORAGE = {
   MODE: 'diary_mode',
   SOUND: 'diary_sound',
   CURRENT: 'diary_current_page',
-  MOODS: 'diary_moods'  // { 'YYYY-MM-DD': 'happy' }
+  MOODS: 'diary_moods',
+  WELCOME: 'diary_welcome_shown'
 };
 
 const QUOTES = [
@@ -326,9 +327,8 @@ const QUOTES = [
   '"Little by little, I am becoming." 💫'
 ];
 
-const EMOJIS = ['😊','😍','🥰','😂','😭','😤','😴','🤔','😎','🥺','😇','🤗','💖','💕','💗','💘','✨','⭐','🌟','💫','🌸','🌷','🌹','🌺','🦋','🐝','🌙','☀️','🌈','☁️','🔥','💎','🎀','🎁','📖','✍️','🎵','🎶','🌻','🍀','🫶','👑','💌','📝','🗝️','🕊️','🌊','🍃'];
+const EMOJIS = ['😊','😍','🥰','','😭','😤','😴','🤔','','🥺','','🤗','','💕','💗','💘','✨','⭐','🌟','','🌸','','🌹','','🦋','','🌙','️','🌈','️','🔥','','🎀','','📖','️','🎵','🎶','🌻','🍀','','👑','','📝','️','🕊️','🌊',''];
 
-// Mood options for the weekly tracker
 const MOODS = [
   { key: 'amazing', emoji: '🤩', label: 'Amazing' },
   { key: 'happy',   emoji: '😊', label: 'Happy' },
@@ -353,12 +353,10 @@ const state = {
   soundOn: true,
   saveTimer: null,
   searchQuery: '',
-  // Calendar
   calYear: new Date().getFullYear(),
   calMonth: new Date().getMonth(),
-  // Week mood
   weekOffset: 0,
-  moods: {},  // { 'YYYY-MM-DD': 'happy' }
+  moods: {},
   selectedWeekDay: null
 };
 
@@ -421,7 +419,6 @@ function initBowCursor() {
     mouseY = e.clientY;
   });
 
-  // Smooth follow animation
   function animate() {
     bowX += (mouseX - bowX) * 0.25;
     bowY += (mouseY - bowY) * 0.25;
@@ -430,11 +427,9 @@ function initBowCursor() {
   }
   animate();
 
-  // Click effect
   document.addEventListener('mousedown', () => bow.classList.add('clicking'));
   document.addEventListener('mouseup', () => bow.classList.remove('clicking'));
 
-  // Hover effect on interactive elements
   document.addEventListener('mouseover', (e) => {
     const t = e.target;
     if (t.closest('button, a, .page-item, .cal-day, .week-day, .mood-option, .theme-chip, .key, input, textarea, [contenteditable]')) {
@@ -571,7 +566,40 @@ function playSound(type) {
 function showScreen(id) {
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
   document.getElementById(id).classList.add('active');
-  if (id === 'diary-screen') initDiary();
+  if (id === 'diary-screen') {
+    initDiary();
+    showWelcome();
+  }
+}
+
+// ============ WARM WELCOME ============
+function showWelcome() {
+  const hasShownWelcome = localStorage.getItem(STORAGE.WELCOME);
+  if (!hasShownWelcome) {
+    setTimeout(() => {
+      openModal({
+        title: '💖 Welcome to Your Secret Diary!',
+        body: `<p style="font-size: 15px; line-height: 1.8;">
+          Hello, beautiful soul! 🌸<br><br>
+          This is your safe space to write, reflect, and grow. Every word you write is precious and protected by your secret PIN.<br><br>
+          <strong>Features you'll love:</strong><br>
+          ✨ Unlimited pages<br>
+           Cute bow cursor<br>
+          📅 Calendar & mood tracker<br>
+          🎨 10 beautiful themes<br>
+          💌 Send feedback anytime<br><br>
+          Happy writing! 💕
+        </p>`,
+        actions: [
+          { label: 'Start Writing ✨', class: 'confirm', action: () => { 
+            closeModal(); 
+            localStorage.setItem(STORAGE.WELCOME, 'true');
+            playSound('success');
+          }}
+        ]
+      });
+    }, 500);
+  }
 }
 
 // ============ KEYPADS ============
@@ -983,7 +1011,6 @@ function renderCalendar() {
   const today = new Date();
   const todayY = today.getFullYear(), todayM = today.getMonth(), todayD = today.getDate();
 
-  // Build a set of dates that have pages
   const pageDates = new Set();
   state.pages.forEach(p => {
     const d = new Date(p.date);
@@ -993,13 +1020,11 @@ function renderCalendar() {
   });
 
   grid.innerHTML = '';
-  // Empty cells before first day
   for (let i = 0; i < firstDay; i++) {
     const empty = document.createElement('div');
     empty.className = 'cal-day empty';
     grid.appendChild(empty);
   }
-  // Day cells
   for (let d = 1; d <= daysInMonth; d++) {
     const cell = document.createElement('button');
     cell.className = 'cal-day';
@@ -1028,7 +1053,6 @@ function renderCalendar() {
 }
 
 function openOrCreatePageForDate(date) {
-  // Find a page on this date
   const y = date.getFullYear(), m = date.getMonth(), d = date.getDate();
   const existing = state.pages.find(p => {
     const pd = new Date(p.date);
@@ -1041,7 +1065,6 @@ function openOrCreatePageForDate(date) {
     createNewPage(false, date);
     showToast('✨ Created page for ' + formatDateShort(date.getTime()));
   }
-  // Close calendar panel on mobile
   if (window.innerWidth < 820) {
     document.getElementById('calendar-panel').classList.remove('open');
   }
@@ -1073,7 +1096,7 @@ function bindCalendar() {
 // ============ 💖 WEEK MOOD TRACKER ============
 function getWeekDates(offset = 0) {
   const today = new Date();
-  const dayOfWeek = today.getDay(); // 0=Sun, 6=Sat
+  const dayOfWeek = today.getDay();
   const startOfWeek = new Date(today);
   startOfWeek.setDate(today.getDate() - dayOfWeek + (offset * 7));
   startOfWeek.setHours(0, 0, 0, 0);
@@ -1097,7 +1120,6 @@ function renderWeekMood() {
   const todayStr = `${today.getFullYear()}-${String(today.getMonth()+1).padStart(2,'0')}-${String(today.getDate()).padStart(2,'0')}`;
   const dayNames = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
 
-  // Label
   if (state.weekOffset === 0) label.textContent = 'This Week';
   else if (state.weekOffset === -1) label.textContent = 'Last Week';
   else if (state.weekOffset === 1) label.textContent = 'Next Week';
@@ -1130,13 +1152,11 @@ function openMoodPopup(dateKey, date, event) {
   const title = document.getElementById('mood-popup-title');
   title.textContent = `How did you feel on ${formatDateShort(date.getTime())}?`;
 
-  // Highlight selected mood
   const currentMood = state.moods[dateKey];
   document.querySelectorAll('.mood-option').forEach(opt => {
     opt.classList.toggle('selected', opt.dataset.mood === currentMood);
   });
 
-  // Position popup
   const rect = event.currentTarget.getBoundingClientRect();
   popup.style.top = Math.min(rect.bottom + 8, window.innerHeight - 260) + 'px';
   popup.style.left = Math.max(10, Math.min(rect.left, window.innerWidth - 220)) + 'px';
@@ -1177,7 +1197,6 @@ function buildMoodOptions() {
     showToast('Mood cleared');
   });
 
-  // Close mood popup on outside click
   document.addEventListener('click', (e) => {
     const popup = document.getElementById('mood-popup');
     if (!popup.contains(e.target) && !e.target.closest('.week-day')) {
@@ -1198,6 +1217,35 @@ function bindWeekNav() {
     renderWeekMood();
   });
 }
+
+// ============ THEME PANEL ============
+function buildThemePanel() {
+  const grid = document.getElementById('theme-grid');
+  grid.innerHTML = '';
+  Object.entries(THEMES).forEach(([key, t]) => {
+    const btn = document.createElement('button');
+    btn.className = 'theme-chip' + (key === state.theme ? ' active' : '');
+    btn.dataset.theme = key;
+    btn.innerHTML = `<span class="swatch" style="background:${t.light['--accent']}"></span>${t.name}`;
+    btn.addEventListener('click', () => {
+      playSound('click');
+      state.theme = key;
+      applyTheme();
+      savePrefs();
+      showToast(`🎨 ${t.name}`);
+    });
+    grid.appendChild(btn);
+  });
+
+  document.getElementById('mode-switch').addEventListener('change', (e) => {
+    playSound('click');
+    state.mode = e.target.checked ? 'dark' : 'light';
+    applyTheme();
+    savePrefs();
+    showToast(state.mode === 'dark' ? '🌙 Dark mode' : '☀️ Light mode');
+  });
+}
+
 // ============ 💌 FEEDBACK ============
 function bindFeedback() {
   const panel = document.getElementById('feedback-panel');
@@ -1206,7 +1254,6 @@ function bindFeedback() {
   const counter = document.getElementById('fb-counter');
   const submitBtn = document.getElementById('fb-submit');
 
-  // Open panel
   document.getElementById('feedback-btn').addEventListener('click', () => {
     playSound('click');
     panel.classList.add('open');
@@ -1215,17 +1262,14 @@ function bindFeedback() {
     document.getElementById('calendar-panel').classList.remove('open');
   });
 
-  // Character counter
   msgField.addEventListener('input', () => {
     counter.textContent = msgField.value.length;
   });
 
-  // Form submission via FormSubmit.co
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
     playSound('click');
 
-    // Validate
     if (!msgField.value.trim()) {
       showToast('✍️ Please write a message');
       msgField.focus();
@@ -1252,7 +1296,6 @@ function bindFeedback() {
         throw new Error('Failed');
       }
     } catch (err) {
-      // Fallback: open mailto
       playSound('error');
       const name = document.getElementById('fb-name').value || 'Anonymous';
       const email = document.getElementById('fb-email').value || '';
@@ -1265,7 +1308,7 @@ function bindFeedback() {
         `Type: ${type}\n\n` +
         `Message:\n${message}`
       );
-      window.location.href = `mailto:YOUR_EMAIL_HERE@example.com?subject=${subject}&body=${body}`;
+      window.location.href = `mailto:aiphimarybuhphang@gmail.com?subject=${subject}&body=${body}`;
       showToast('📧 Opened your email app');
     } finally {
       submitBtn.classList.remove('sending');
@@ -1291,11 +1334,9 @@ function showFeedbackSuccess() {
     </div>
   `;
 
-  // Re-bind close button
   panel.querySelector('[data-close="feedback-panel"]').addEventListener('click', () => {
     playSound('click');
     panel.classList.remove('open');
-    // Restore original form after closing
     setTimeout(() => {
       panel.innerHTML = originalContent;
       bindFeedback();
@@ -1306,33 +1347,6 @@ function showFeedbackSuccess() {
     playSound('click');
     panel.innerHTML = originalContent;
     bindFeedback();
-  });
-}
-// ============ THEME PANEL ============
-function buildThemePanel() {
-  const grid = document.getElementById('theme-grid');
-  grid.innerHTML = '';
-  Object.entries(THEMES).forEach(([key, t]) => {
-    const btn = document.createElement('button');
-    btn.className = 'theme-chip' + (key === state.theme ? ' active' : '');
-    btn.dataset.theme = key;
-    btn.innerHTML = `<span class="swatch" style="background:${t.light['--accent']}"></span>${t.name}`;
-    btn.addEventListener('click', () => {
-      playSound('click');
-      state.theme = key;
-      applyTheme();
-      savePrefs();
-      showToast(`🎨 ${t.name}`);
-    });
-    grid.appendChild(btn);
-  });
-
-  document.getElementById('mode-switch').addEventListener('change', (e) => {
-    playSound('click');
-    state.mode = e.target.checked ? 'dark' : 'light';
-    applyTheme();
-    savePrefs();
-    showToast(state.mode === 'dark' ? '🌙 Dark mode' : '☀️ Light mode');
   });
 }
 
@@ -1587,17 +1601,8 @@ function bindAll() {
   bindPanels();
   bindCalendar();
   bindWeekNav();
-function bindAll() {
-  bindSetup();
-  bindLock();
-  bindEditor();
-  bindPanels();
-  bindCalendar();
-  bindWeekNav();
-  bindFeedback();   // ← ADD THIS LINE
+  bindFeedback();
 
-  // ... rest stays the same
-}
   document.addEventListener('keydown', (e) => {
     if (!document.getElementById('diary-screen').classList.contains('active')) return;
     if ((e.ctrlKey || e.metaKey) && e.key === 'n') {
