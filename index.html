@@ -11,7 +11,7 @@
 </head>
 <body class="bow-cursor">
 
-<!-- ============ CUSTOM BOW CURSOR (follows mouse) ============ -->
+<!-- ============ 🎀 CUSTOM BOW CURSOR ============ -->
 <div class="bow-cursor-follower" id="bow-follower" aria-hidden="true">🎀</div>
 
 <!-- ============ FLOATING DECORATIONS ============ -->
@@ -62,20 +62,16 @@
         <input type="text" id="search-input" placeholder="Search pages..." />
       </div>
       <div class="page-list" id="page-list"></div>
-    <div class="sidebar-footer">
-  <div class="footer-row">
-    <button class="footer-btn" id="calendar-btn" title="Calendar">📅</button>
-    <button class="footer-btn" id="theme-btn" title="Themes">🎨</button>
-    <button class="footer-btn" id="mode-btn" title="Toggle mode">🌙</button>
-    <button class="footer-btn" id="sound-btn" title="Sound">🔊</button>
-    <button class="footer-btn" id="feedback-btn" title="Feedback">💌</button>  <!-- ADD THIS -->
-    <button class="footer-btn" id="export-btn" title="Export">📥</button>
-    <button class="footer-btn" id="settings-btn" title="Settings">⚙️</button>
-  </div>
-  <div class="stats">
-    <span id="stat-pages">0 pages</span> · <span id="stat-words">0 words</span>
-  </div>
-</div>
+      <div class="sidebar-footer">
+        <div class="footer-row">
+          <button class="footer-btn" id="calendar-btn" title="Calendar">📅</button>
+          <button class="footer-btn" id="theme-btn" title="Themes">🎨</button>
+          <button class="footer-btn" id="mode-btn" title="Toggle mode">🌙</button>
+          <button class="footer-btn" id="sound-btn" title="Sound">🔊</button>
+          <button class="footer-btn" id="feedback-btn" title="Feedback">💌</button>
+          <button class="footer-btn" id="export-btn" title="Export">📥</button>
+          <button class="footer-btn" id="settings-btn" title="Settings">⚙️</button>
+        </div>
         <div class="stats">
           <span id="stat-pages">0 pages</span> · <span id="stat-words">0 words</span>
         </div>
@@ -132,7 +128,7 @@
   </div>
 </section>
 
-<!-- ============ CALENDAR PANEL ============ -->
+<!-- ============ 📅 CALENDAR PANEL ============ -->
 <aside class="panel glass calendar-panel" id="calendar-panel">
   <div class="panel-head">
     <h3>📅 Calendar & Mood</h3>
@@ -170,7 +166,7 @@
   </div>
 </aside>
 
-<!-- ============ THEME PANEL ============ -->
+<!-- ============ 🎨 THEME PANEL ============ -->
 <aside class="panel glass" id="theme-panel">
   <div class="panel-head">
     <h3>🎨 Themes</h3>
@@ -187,7 +183,7 @@
   </div>
 </aside>
 
-<!-- ============ SETTINGS PANEL ============ -->
+<!-- ============ ⚙️ SETTINGS PANEL ============ -->
 <aside class="panel glass" id="settings-panel">
   <div class="panel-head">
     <h3>⚙️ Settings</h3>
@@ -197,17 +193,66 @@
     <button class="setting-item" id="change-pin-setting">🔑 Change PIN</button>
     <button class="setting-item" id="reset-setting">🗑 Reset Diary</button>
     <button class="setting-item" id="lock-setting">🔒 Lock Diary</button>
+    
+    <!-- Updates Section -->
+    <div class="updates-section">
+      <h4 style="font-family: 'Caveat', cursive; font-size: 20px; color: var(--accent); margin-bottom: 10px;">✨ What's New</h4>
+      <div class="updates-list">
+        <div class="update-item">
+          <span class="update-icon">🎀</span>
+          <div class="update-content">
+            <strong>Bow Cursor</strong>
+            <p>Cute bow follows your mouse!</p>
+          </div>
+        </div>
+        <div class="update-item">
+          <span class="update-icon">📅</span>
+          <div class="update-content">
+            <strong>Calendar</strong>
+            <p>Jump to any date & track moods</p>
+          </div>
+        </div>
+        <div class="update-item">
+          <span class="update-icon">💖</span>
+          <div class="update-content">
+            <strong>Weekly Mood Tracker</strong>
+            <p>Log how you feel each day</p>
+          </div>
+        </div>
+        <div class="update-item">
+          <span class="update-icon">💌</span>
+          <div class="update-content">
+            <strong>Feedback System</strong>
+            <p>Send messages to the creator</p>
+          </div>
+        </div>
+        <div class="update-item">
+          <span class="update-icon">🔊</span>
+          <div class="update-content">
+            <strong>Sound Effects</strong>
+            <p>Pleasant sounds for actions</p>
+          </div>
+        </div>
+        <div class="update-item">
+          <span class="update-icon">🎨</span>
+          <div class="update-content">
+            <strong>10 Beautiful Themes</strong>
+            <p>Light & dark modes for each</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    
     <div class="setting-about">
       <p>✨ Unlimited pages</p>
-      <p>📅 Calendar + weekly mood</p>
-      <p>🎀 Bow cursor</p>
       <p>💾 Auto-saves everything</p>
-      <p>🔊 Sound effects</p>
+      <p>🔒 PIN-protected</p>
+      <p>⌨️ Shortcuts: Ctrl+N (new), Ctrl+S (save), Ctrl+F (search)</p>
     </div>
   </div>
 </aside>
 
-  <!-- ============ FEEDBACK PANEL ============ -->
+<!-- ============ 💌 FEEDBACK PANEL ============ -->
 <aside class="panel glass feedback-panel" id="feedback-panel">
   <div class="panel-head">
     <h3>💌 Send Feedback</h3>
@@ -219,7 +264,7 @@
     Your message goes straight to my inbox!
   </p>
 
-  <form id="feedback-form" action="https://formsubmit.co/YOUR_EMAIL_HERE@example.com" method="POST">
+  <form id="feedback-form" action="https://formsubmit.co/aiphimarybuhphang@gmail.com" method="POST">
     <!-- FormSubmit hidden settings -->
     <input type="hidden" name="_subject" value="💌 New Diary Feedback!">
     <input type="hidden" name="_captcha" value="false">
@@ -245,7 +290,7 @@
         <option value="💖 Love / Compliment">💖 Love / Compliment</option>
         <option value="🎨 Design Suggestion">🎨 Design Suggestion</option>
         <option value="🤔 Question">🤔 Question</option>
-        <option value="📝 Other">📝 Other</option>
+        <option value="📝 Other"> Other</option>
       </select>
     </div>
 
@@ -264,7 +309,7 @@
     <span>or</span>
   </div>
 
-  <a href="mailto:YOUR_EMAIL_HERE@example.com?subject=Diary%20Feedback" class="btn-ghost fb-mailto">
+  <a href="mailto:aiphimarybuhphang@gmail.com?subject=Diary%20Feedback" class="btn-ghost fb-mailto">
     ✉️ Open in my email app instead
   </a>
 
@@ -272,6 +317,7 @@
     🔒 Your info is never stored in the diary. Messages are sent directly to the diary owner.
   </p>
 </aside>
+
 <!-- ============ EMOJI PICKER ============ -->
 <div class="emoji-picker glass" id="emoji-picker">
   <div class="emoji-grid" id="emoji-grid"></div>
