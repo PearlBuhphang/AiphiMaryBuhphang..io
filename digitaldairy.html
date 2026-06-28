@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>🌸 Secret Diary</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;700&family=Dancing+Script:wght@400;700&family=Inter:wght@300;400;500;600;700&family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="digitaldairy.css" />
+</head>
+<body class="bow-cursor">
+
+<!-- ============ CUSTOM BOW CURSOR (follows mouse) ============ -->
+<div class="bow-cursor-follower" id="bow-follower" aria-hidden="true">🎀</div>
+
+<!-- ============ FLOATING DECORATIONS ============ -->
+<div class="bg-deco" aria-hidden="true">
+  <span class="floater">🌸</span><span class="floater">✨</span>
+  <span class="floater">🦋</span><span class="floater">💫</span>
+  <span class="floater">🌷</span><span class="floater">☁️</span>
+</div>
+
+<!-- ============ SETUP SCREEN ============ -->
+<section id="setup-screen" class="screen active">
+  <div class="auth-card glass">
+    <div class="auth-icon">📔</div>
+    <h1 class="script-title">Create Your Secret PIN</h1>
+    <p class="subtitle">Choose a 4-digit numeric PIN</p>
+    <div class="pin-display" id="setup-display"></div>
+    <p class="auth-msg" id="setup-msg">Enter your new PIN</p>
+    <div class="keypad" id="setup-keypad"></div>
+    <button class="btn-primary" id="setup-next" disabled>Continue</button>
+  </div>
+</section>
+
+<!-- ============ LOCK SCREEN ============ -->
+<section id="lock-screen" class="screen">
+  <div class="auth-card glass" id="lock-card">
+    <div class="auth-icon" id="lock-emoji">🔒</div>
+    <h1 class="script-title">Welcome Back</h1>
+    <p class="subtitle" id="lock-quote">"Some secrets are worth keeping."</p>
+    <div class="pin-display" id="lock-display"></div>
+    <p class="auth-msg" id="lock-msg">Enter your PIN</p>
+    <div class="keypad" id="lock-keypad"></div>
+    <button class="btn-ghost" id="forgot-btn">Forgot PIN?</button>
+  </div>
+</section>
+
+<!-- ============ MAIN DIARY ============ -->
+<section id="diary-screen" class="screen">
+  <div class="app-layout">
+
+    <!-- Sidebar -->
+    <aside class="sidebar glass" id="sidebar">
+      <div class="sidebar-top">
+        <h2 class="script-title">📔 My Diary</h2>
+        <button class="icon-btn" id="toggle-sidebar" title="Close">✕</button>
+      </div>
+      <button class="btn-accent" id="new-page-btn">✨ New Page</button>
+      <div class="search-wrap">
+        <input type="text" id="search-input" placeholder="Search pages..." />
+      </div>
+      <div class="page-list" id="page-list"></div>
+      <div class="sidebar-footer">
+        <div class="footer-row">
+          <button class="footer-btn" id="calendar-btn" title="Calendar">📅</button>
+          <button class="footer-btn" id="theme-btn" title="Themes">🎨</button>
+          <button class="footer-btn" id="mode-btn" title="Toggle mode">🌙</button>
+          <button class="footer-btn" id="sound-btn" title="Sound">🔊</button>
+          <button class="footer-btn" id="export-btn" title="Export">📥</button>
+          <button class="footer-btn" id="settings-btn" title="Settings">⚙️</button>
+        </div>
+        <div class="stats">
+          <span id="stat-pages">0 pages</span> · <span id="stat-words">0 words</span>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Mobile sidebar toggle -->
+    <button class="mobile-menu-btn" id="mobile-menu">☰</button>
+
+    <!-- Editor -->
+    <main class="editor">
+      <div class="editor-top">
+        <input type="text" id="page-title" class="page-title-input" placeholder="Untitled page..." />
+        <div class="page-meta">
+          <span id="page-date"></span>
+          <button class="tag-btn" id="favorite-btn" title="Favorite">☆</button>
+          <button class="tag-btn" id="delete-page-btn" title="Delete">🗑</button>
+        </div>
+      </div>
+
+      <div class="toolbar">
+        <button class="tool" data-cmd="bold" title="Bold"><b>B</b></button>
+        <button class="tool" data-cmd="italic" title="Italic"><i>I</i></button>
+        <button class="tool" data-cmd="underline" title="Underline"><u>U</u></button>
+        <button class="tool" data-cmd="strikeThrough" title="Strike">S̶</button>
+        <span class="tool-sep"></span>
+        <button class="tool" data-cmd="formatBlock" data-val="H1" title="Heading 1">H1</button>
+        <button class="tool" data-cmd="formatBlock" data-val="H2" title="Heading 2">H2</button>
+        <button class="tool" data-cmd="formatBlock" data-val="P" title="Paragraph">¶</button>
+        <span class="tool-sep"></span>
+        <button class="tool" data-cmd="insertUnorderedList" title="List">•</button>
+        <button class="tool" data-cmd="insertOrderedList" title="Numbered">1.</button>
+        <button class="tool" data-cmd="formatBlock" data-val="BLOCKQUOTE" title="Quote">"</button>
+        <span class="tool-sep"></span>
+        <button class="tool" id="insert-emoji-btn" title="Emoji">😊</button>
+        <button class="tool" data-cmd="removeFormat" title="Clear">✖</button>
+      </div>
+
+      <div class="editor-body">
+        <div class="notebook-page">
+          <div class="page-lines" aria-hidden="true"></div>
+          <div class="washi" aria-hidden="true"></div>
+          <div class="bookmark" aria-hidden="true">♡</div>
+          <div class="page-content" id="page-content" contenteditable="true" spellcheck="true" data-placeholder="Start writing your thoughts..."></div>
+        </div>
+      </div>
+
+      <div class="editor-footer">
+        <span class="count" id="word-count">0 words</span>
+        <span class="count" id="char-count">0 chars</span>
+        <span class="save-status" id="save-status">● Saved</span>
+      </div>
+    </main>
+  </div>
+</section>
+
+<!-- ============ CALENDAR PANEL ============ -->
+<aside class="panel glass calendar-panel" id="calendar-panel">
+  <div class="panel-head">
+    <h3>📅 Calendar & Mood</h3>
+    <button class="icon-btn" data-close="calendar-panel">✕</button>
+  </div>
+
+  <!-- Month navigation -->
+  <div class="cal-nav">
+    <button class="cal-arrow" id="cal-prev">‹</button>
+    <div class="cal-month-label" id="cal-month-label">June 2026</div>
+    <button class="cal-arrow" id="cal-next">›</button>
+  </div>
+
+  <!-- Calendar grid -->
+  <div class="cal-weekdays">
+    <div>Sun</div><div>Mon</div><div>Tue</div><div>Wed</div>
+    <div>Thu</div><div>Fri</div><div>Sat</div>
+  </div>
+  <div class="cal-grid" id="cal-grid"></div>
+
+  <button class="btn-accent cal-today-btn" id="cal-today-btn">📍 Jump to Today</button>
+
+  <!-- Week Mood Tracker -->
+  <div class="week-mood-section">
+    <div class="week-mood-header">
+      <h4>💖 This Week's Mood</h4>
+      <div class="week-nav">
+        <button class="week-arrow" id="week-prev">‹</button>
+        <span class="week-label" id="week-label">This Week</span>
+        <button class="week-arrow" id="week-next">›</button>
+      </div>
+    </div>
+    <div class="week-mood-grid" id="week-mood-grid"></div>
+    <p class="week-mood-hint">Tap a day, then pick how you felt 💭</p>
+  </div>
+</aside>
+
+<!-- ============ THEME PANEL ============ -->
+<aside class="panel glass" id="theme-panel">
+  <div class="panel-head">
+    <h3>🎨 Themes</h3>
+    <button class="icon-btn" data-close="theme-panel">✕</button>
+  </div>
+  <div class="theme-grid" id="theme-grid"></div>
+  <div class="mode-switch">
+    <span>☀️</span>
+    <label class="switch">
+      <input type="checkbox" id="mode-switch" />
+      <span class="slider"></span>
+    </label>
+    <span>🌙</span>
+  </div>
+</aside>
+
+<!-- ============ SETTINGS PANEL ============ -->
+<aside class="panel glass" id="settings-panel">
+  <div class="panel-head">
+    <h3>⚙️ Settings</h3>
+    <button class="icon-btn" data-close="settings-panel">✕</button>
+  </div>
+  <div class="settings-list">
+    <button class="setting-item" id="change-pin-setting">🔑 Change PIN</button>
+    <button class="setting-item" id="reset-setting">🗑 Reset Diary</button>
+    <button class="setting-item" id="lock-setting">🔒 Lock Diary</button>
+    <div class="setting-about">
+      <p>✨ Unlimited pages</p>
+      <p>📅 Calendar + weekly mood</p>
+      <p>🎀 Bow cursor</p>
+      <p>💾 Auto-saves everything</p>
+      <p>🔊 Sound effects</p>
+    </div>
+  </div>
+</aside>
+
+<!-- ============ EMOJI PICKER ============ -->
+<div class="emoji-picker glass" id="emoji-picker">
+  <div class="emoji-grid" id="emoji-grid"></div>
+</div>
+
+<!-- ============ MOOD PICKER (for week) ============ -->
+<div class="mood-popup glass" id="mood-popup">
+  <div class="mood-popup-title" id="mood-popup-title">How did you feel?</div>
+  <div class="mood-options" id="mood-options"></div>
+  <button class="mood-clear-btn" id="mood-clear-btn">Clear mood</button>
+</div>
+
+<!-- ============ MODAL ============ -->
+<div class="modal-backdrop" id="modal-backdrop">
+  <div class="modal glass" id="modal">
+    <div class="modal-head">
+      <h3 id="modal-title"></h3>
+      <button class="icon-btn" data-close="modal">✕</button>
+    </div>
+    <div class="modal-body" id="modal-body"></div>
+    <div class="modal-actions" id="modal-actions"></div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<script src="script.js"></script>
+</body>
+</html>
