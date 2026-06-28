@@ -70,6 +70,7 @@
           <button class="footer-btn" id="sound-btn" title="Sound">🔊</button>
           <button class="footer-btn" id="export-btn" title="Export">📥</button>
           <button class="footer-btn" id="settings-btn" title="Settings">⚙️</button>
+          
         </div>
         <div class="stats">
           <span id="stat-pages">0 pages</span> · <span id="stat-words">0 words</span>
@@ -202,6 +203,71 @@
   </div>
 </aside>
 
+  <!-- ============ FEEDBACK PANEL ============ -->
+<aside class="panel glass feedback-panel" id="feedback-panel">
+  <div class="panel-head">
+    <h3>💌 Send Feedback</h3>
+    <button class="icon-btn" data-close="feedback-panel">✕</button>
+  </div>
+
+  <p class="feedback-intro">
+    Found a bug? Have an idea? Just want to say hi? 💖<br>
+    Your message goes straight to my inbox!
+  </p>
+
+  <form id="feedback-form" action="https://formsubmit.co/YOUR_EMAIL_HERE@example.com" method="POST">
+    <!-- FormSubmit hidden settings -->
+    <input type="hidden" name="_subject" value="💌 New Diary Feedback!">
+    <input type="hidden" name="_captcha" value="false">
+    <input type="hidden" name="_template" value="box">
+    <input type="text" name="_honey" style="display:none">
+
+    <div class="form-group">
+      <label for="fb-name">Your Name <span class="optional">(optional)</span></label>
+      <input type="text" id="fb-name" name="name" placeholder="Anonymous friend 🌸" />
+    </div>
+
+    <div class="form-group">
+      <label for="fb-email">Your Email <span class="optional">(optional)</span></label>
+      <input type="email" id="fb-email" name="email" placeholder="so I can reply 💌" />
+    </div>
+
+    <div class="form-group">
+      <label for="fb-type">What's this about?</label>
+      <select id="fb-type" name="type" required>
+        <option value="">Choose one...</option>
+        <option value="💡 Feature Idea">💡 Feature Idea</option>
+        <option value="🐛 Bug Report">🐛 Bug Report</option>
+        <option value="💖 Love / Compliment">💖 Love / Compliment</option>
+        <option value="🎨 Design Suggestion">🎨 Design Suggestion</option>
+        <option value="🤔 Question">🤔 Question</option>
+        <option value="📝 Other">📝 Other</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label for="fb-message">Your Message</label>
+      <textarea id="fb-message" name="message" rows="5" maxlength="1000" placeholder="Tell me everything... ✨" required></textarea>
+      <div class="fb-counter"><span id="fb-counter">0</span> / 1000</div>
+    </div>
+
+    <button type="submit" class="btn-primary fb-submit" id="fb-submit">
+      Send Message 💌
+    </button>
+  </form>
+
+  <div class="feedback-divider">
+    <span>or</span>
+  </div>
+
+  <a href="mailto:YOUR_EMAIL_HERE@example.com?subject=Diary%20Feedback" class="btn-ghost fb-mailto">
+    ✉️ Open in my email app instead
+  </a>
+
+  <p class="feedback-note">
+    🔒 Your info is never stored in the diary. Messages are sent directly to the diary owner.
+  </p>
+</aside>
 <!-- ============ EMOJI PICKER ============ -->
 <div class="emoji-picker glass" id="emoji-picker">
   <div class="emoji-grid" id="emoji-grid"></div>
