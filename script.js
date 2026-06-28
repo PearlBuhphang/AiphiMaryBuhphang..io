@@ -1198,7 +1198,116 @@ function bindWeekNav() {
     renderWeekMood();
   });
 }
+// ============ 💌 FEEDBACK ============
+function bindFeedback() {
+  const panel = document.getElementById('feedback-panel');
+  const form = document.getElementById('feedback-form');
+  const msgField = document.getElementById('fb-message');
+  const counter = document.getElementById('fb-counter');
+  const submitBtn = document.getElementById('fb-submit');
 
+  // Open panel
+  document.getElementById('feedback-btn').addEventListener('click', () => {
+    playSound('click');
+    panel.classList.add('open');
+    document.getElementById('theme-panel').classList.remove('open');
+    document.getElementById('settings-panel').classList.remove('open');
+    document.getElementById('calendar-panel').classList.remove('open');
+  });
+
+  // Character counter
+  msgField.addEventListener('input', () => {
+    counter.textContent = msgField.value.length;
+  });
+
+  // Form submission via FormSubmit.co
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    playSound('click');
+
+    // Validate
+    if (!msgField.value.trim()) {
+      showToast('✍️ Please write a message');
+      msgField.focus();
+      return;
+    }
+
+    submitBtn.classList.add('sending');
+    submitBtn.textContent = 'Sending... ✈️';
+
+    try {
+      const formData = new FormData(form);
+      const response = await fetch(form.action, {
+        method: 'POST',
+        body: formData,
+        headers: { 'Accept': 'application/json' }
+      });
+
+      if (response.ok) {
+        playSound('success');
+        showFeedbackSuccess();
+        form.reset();
+        counter.textContent = '0';
+      } else {
+        throw new Error('Failed');
+      }
+    } catch (err) {
+      // Fallback: open mailto
+      playSound('error');
+      const name = document.getElementById('fb-name').value || 'Anonymous';
+      const email = document.getElementById('fb-email').value || '';
+      const type = document.getElementById('fb-type').value || 'Feedback';
+      const message = msgField.value;
+
+      const subject = encodeURIComponent(`💌 Diary Feedback: ${type}`);
+      const body = encodeURIComponent(
+        `From: ${name} ${email ? '<' + email + '>' : ''}\n` +
+        `Type: ${type}\n\n` +
+        `Message:\n${message}`
+      );
+      window.location.href = `mailto:YOUR_EMAIL_HERE@example.com?subject=${subject}&body=${body}`;
+      showToast('📧 Opened your email app');
+    } finally {
+      submitBtn.classList.remove('sending');
+      submitBtn.textContent = 'Send Message 💌';
+    }
+  });
+}
+
+function showFeedbackSuccess() {
+  const panel = document.getElementById('feedback-panel');
+  const originalContent = panel.innerHTML;
+
+  panel.innerHTML = `
+    <div class="panel-head">
+      <h3>💌 Message Sent!</h3>
+      <button class="icon-btn" data-close="feedback-panel">✕</button>
+    </div>
+    <div class="feedback-success">
+      <div class="success-icon">💖</div>
+      <h4>Thank you!</h4>
+      <p>Your message has been sent to my inbox.<br>I'll read it soon — promise! 🌸</p>
+      <button class="btn-primary" id="fb-again-btn" style="margin-top:16px;">Send Another</button>
+    </div>
+  `;
+
+  // Re-bind close button
+  panel.querySelector('[data-close="feedback-panel"]').addEventListener('click', () => {
+    playSound('click');
+    panel.classList.remove('open');
+    // Restore original form after closing
+    setTimeout(() => {
+      panel.innerHTML = originalContent;
+      bindFeedback();
+    }, 400);
+  });
+
+  document.getElementById('fb-again-btn').addEventListener('click', () => {
+    playSound('click');
+    panel.innerHTML = originalContent;
+    bindFeedback();
+  });
+}
 // ============ THEME PANEL ============
 function buildThemePanel() {
   const grid = document.getElementById('theme-grid');
@@ -1478,7 +1587,17 @@ function bindAll() {
   bindPanels();
   bindCalendar();
   bindWeekNav();
+function bindAll() {
+  bindSetup();
+  bindLock();
+  bindEditor();
+  bindPanels();
+  bindCalendar();
+  bindWeekNav();
+  bindFeedback();   // ← ADD THIS LINE
 
+  // ... rest stays the same
+}
   document.addEventListener('keydown', (e) => {
     if (!document.getElementById('diary-screen').classList.contains('active')) return;
     if ((e.ctrlKey || e.metaKey) && e.key === 'n') {
